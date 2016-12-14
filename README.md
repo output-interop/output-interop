@@ -19,9 +19,7 @@ Installation
 
 You can install this package thorugh Composer:
 
-```json
-composer require output-interop/output-interop
-```
+`composer require output-interop/output-interop`
 
 The packages adhers to the [SemVer](http://semver.org) specification, and there will be full backward compatibility
 between minor versions.
