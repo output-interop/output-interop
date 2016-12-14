@@ -1,5 +1,5 @@
-HTML Output Interoperability
-============================
+PHP Output Rendering Interoperability
+=====================================
 
 *output-interop* tries to identify and standardize features in *output* renderers (Twig, Smarty, PHP, Blade, FoilPHP)
 to achieve interoperability.
@@ -14,19 +14,14 @@ adapted to these interfaces.
 The work done in this project is not officially endorsed by the PHP-FIG, but it is being worked on by other good developers.
 We adhere to the spirit and ideals of the PHP-FIG, and hope this project will pave the way for one or more future PSRs.
 
-## Installation
+Installation
+------------
 
 You can install this package thorugh Composer:
 
 ```json
-composer require output-interop/html-interop
+composer require output-interop/output-interop
 ```
 
 The packages adhers to the [SemVer](http://semver.org) specification, and there will be full backward compatibility
 between minor versions.
-
-## Standards
-
-## Available
-
-- `O
