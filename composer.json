@@ -1,0 +1,10 @@
+{
+  "name": "output-interop/output-interop",
+  "description": "Promoting the Interoperability of rendering engines (Twig, Smarty, PHP, FoilPHP)",
+  "license": "MIT",
+  "autoload" : {
+    "psr-4" : {
+      "Interop\\Output\\" : "src"
+    }
+  }
+}
