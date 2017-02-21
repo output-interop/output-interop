@@ -1,5 +1,5 @@
-Engine Interface
-================
+Output Rendering Interface
+==========================
 
 This document describes a common interface for Output rendering engines.
 
@@ -26,63 +26,63 @@ referring to these interfaces.
 
 Templates are responsible for coordinating the data and output for display 
 
-`Template\Factory` exposes a way to load a Template.
+`TemplateFactory` exposes a way to load a Template.
 
-`Template\Template` exposes methods for rendering the template, and 
+`Template` exposes methods for rendering the template.
 
 ### 1.2 Contexts
 
-`Context\Context` exposes two methods `accepts` and `provide` to check,
+`Context` exposes two methods `accepts` and `provide` to check,
 and/or obtain, the data that a context has based on the template. Contexts
 hold data that MAY be available during the rendering process. Whether or
 not a template has access to the context data is up to the implementors
 to decide. Contexts MUST be able to answer whether or not they provide
 any data for a given template.
 
-`Context\Collection` provides a representation of a group of contexts
-that MAY be used to compose multiple contexts together. This is often
-useful for when you have a global/default context, and regex contexts
-that only show data on certain parts of the templates.
-
-### 1.2 Engine
-
-`Engine` coordinates between the `Template\Factory` and the `Context\Context`*[]: 
-It MUST be able to return the current template  and context in use. It 
-SHOULD use the factory to generate the `Template\Template` that will be used.
-
-#### 1.1.2 Examples
+#### 1.2.1 Examples
 
 This sections describes examples of contexts, that MAY be added to a Collection.
 Engines are not required to implement these features to respect the Collection
-There is
-no absolute defined type, but the basic idea is that "default" variables
-should be considered a Global context, or available to all
+There is no absolute defined type, but the basic idea is that "default" variables
+should be considered a Generic context, or available to all templates.
 
-### 1.1 Templates
+##### 1.2.1.1 `Collection` Context
 
-Templates represent the actual renderers. These are where the 
+A collection of other types of contexts.
 
-### 1.1 Engine
+##### 1.2.1.2 `Generic` Context
 
-- The `Interop\Output\Engine` exposes multiple methods : `contexts`, `factory`, `useContext`, `render`.
+Default or global variables available to all templates.
 
-- `contexts` takes no parameters. It MUST return a `Context\Collection`.
+##### 1.2.1.3 `Regex` Context
 
-- `factory` takes no parameters. It MUST return a `Template\Factory`.
- 
-- `useContext` takes one mandatory parameter: a `Context` object. It does
-  not return. The context should be added to the `Context\Collection`.
+Variables that are available to templates based on a regular expression.
+
+##### 1.2.1.4 `Contains` Context
+
+Variables that are available templates that contain the given string.
+
+### 1.3 Engine
+
+- The `Engine` exposes multiple methods : `context`, `factory`, `useContext`, `render`.
+
+- `context` takes no parameters. It MUST return a `Context` object.
+
+- `useContext` takes one mandatory parameter: the `Context` to use.
+   This SHOULD replace the existing `Context` object.
+
+- `factory` takes no parameters. It MUST return a `TemplateFactory`.
  
 - `render` takes one mandatory parameter: the template name, and one
-  optional parameter: an array of data. The template name must be a string.
-  It returns the rendereed Template string. It must throw a `TemplateNotFound`
-  exception when the template cannot be found.
+  optional parameter: an array of data or a `Context` object. The
+  template name must be a string. It returns the rendered Template
+  string. It must throw a `TemplateNotFound` exception when the template
+  cannot be found.
 
 ### 1.2 Exceptions
 
 A call to the `render` method with a non-existing template should throw a 
 [`Interop\Output\Exception\TemplateNotFound`](../srcException/TemplateNotFound.php).
-
 
 2. Package
 ----------
@@ -93,13 +93,13 @@ The interfaces and classes described as well as relevant exceptions are provided
 3. Interfaces
 -------------
 
-### 3.1 `Interop\Output\Context\Context`
+### 3.1 `Interop\Output\Context`
 
 ```php
 <?php
-namespace Interop\Output\Context;
+namespace Interop\Output;
 
-use Interop\Output\Template\Template;
+use Interop\Output\Template;
 
 /**
  * Describes a Context object
@@ -126,50 +126,13 @@ interface Context
 }
 ```
 
-### 3.2 `Interop\Output\Context\Collection`
+### 3.2 `Interop\Output\Template`
 
 ```php
 <?php
-namespace Interop\Output\Context;
+namespace Interop\Output;
 
-/**
- * Describes a Collection of Context objects
- */
-interface Collection
-    extends Context
-{
-	/**
-	 * Add a context to the collection
-	 *
-	 * @param Context $context
-	 */
-	public function add(Context $context);
-
-	/**
-	 * Remove a context from the collection
-	 *
-	 * @param Context $context
-	 */
-	public function remove(Context $context);
-
-	/**
-	 * Determine if the collection has the context
-	 *
-	 * @param Context $context
-	 *
-	 * @return bool
-	 */
-	public function has(Context $context);
-}
-```
-
-### 3.2 `Interop\Output\Template\Template`
-
-```php
-<?php
-namespace Interop\Output\Template;
-
-use Interop\Output\Context\Context;
+use Interop\Output\Context;
 
 /**
  * Describes the interface of a Template renderer
@@ -194,17 +157,17 @@ interface Template
 }
 ```
 
-### 3.3 `Interop\Output\Template\Template`
+### 3.3 `Interop\Output\TemplateFactory`
 
 ```php
-namespace Interop\Output\Template;
+namespace Interop\Output;
 
 use Interop\Output\Exception\TemplateNotFound;
 
 /**
  * Describes the interface for Template factories
  */
-interface Factory
+interface TemplateFactory
 {
 	/**
 	 * Loads the given template
@@ -225,10 +188,9 @@ interface Factory
 <?php
 namespace Interop\Output;
 
-use Interop\Output\Context\Collection;
-use Interop\Output\Context\Context;
+use Interop\Output\Context;
 use Interop\Output\Exception\TemplateNotFound;
-use Interop\Output\Template\Factory;
+use Interop\Output\TemplateFactory;
 
 /**
  * Describes the Engine for driving HTML output
@@ -236,18 +198,32 @@ use Interop\Output\Template\Factory;
 interface Engine
 {
 	/**
-	 * Returns the current Context Collection
+	 * Returns the current Context
 	 *
 	 * @return Context
 	 */
 	public function context();
 
 	/**
-	 * Returns the current Factory in use
+	 * Use the given context as the new context
 	 *
-	 * @return Factory
+	 * @param Context The context to use
 	 */
-	public function factory();
+	public function useContext(Context $context);
+	
+	/**
+	 * Returns the current TemplateFactory in use
+	 *
+	 * @return TemplateFactory
+	 */
+	public function templateFactory();
+	
+	/**
+	 * Use the given TemplateFactory
+	 *
+	 * @return TemplateFactory
+	 */
+	public function useTemplateFactory(TemplateFactory $templateFactory);
 
 	/**
 	 * Returns the rendered template

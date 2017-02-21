@@ -1,8 +1,8 @@
 PHP Output Rendering Interoperability
 =====================================
 
-*output-interop* tries to identify and standardize features in *output* renderers (Twig, Smarty, PHP, Blade, FoilPHP)
-to achieve interoperability.
+*output-interop* tries to identify and standardize features in *output* 
+renderers (Twig, Smarty, PHP, Blade, FoilPHP) to achieve interoperability.
 
 Through discussions and trials, we try to create a standard, made of common interfaces but also recommendations.
 

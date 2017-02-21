@@ -6,10 +6,7 @@
 
 namespace Interop\Output;
 
-use Interop\Output\Context\Collection;
-use Interop\Output\Context\Context;
 use Interop\Output\Exception\TemplateNotFound;
-use Interop\Output\Template\Factory;
 
 /**
  * Describes the Engine for driving HTML output
@@ -17,43 +14,45 @@ use Interop\Output\Template\Factory;
 interface Engine
 {
 	/**
-	 * Returns the current Context Collection
+	 * Returns the current Context
 	 *
-	 * @return Collection
+	 * This MAY be a collection of contexts, but must implement the Context Interface
+	 *
+	 * @return Context
 	 */
-	public function contexts();
+	public function context();
 
 	/**
-	 * Returns the current Factory in use
+	 * Use the given context as the new context
 	 *
-	 * @return Factory
-	 */
-	public function factory();
-
-	/**
-	 * Adds the given context to the context collection
-	 *
-	 * @param Context $context
+	 * @param Context $context The context to use
 	 */
 	public function useContext(Context $context);
 
 	/**
-	 * Adds the given data as a global context to the context collection
+	 * Returns the current Factory in use
 	 *
-	 * @param array $data
+	 * @return TemplateFactory
 	 */
-	public function useData(array $data);
+	public function templateFactory();
+
+	/**
+	 * Use the given TemplateFactory
+	 *
+	 * @param TemplateFactory $templateFactory The TemplateFactory to use
+	 */
+	public function useTemplateFactory(TemplateFactory $templateFactory);
 
 	/**
 	 * Returns the rendered template
 	 *
-	 * @param string $template The name of the template to use
-	 * @param array  $data     The data to use in rendering the template
+	 * @param string        $template The name of the template to use
+	 * @param Context|array $data     The data to use in rendering the template
 	 *
 	 * @throws TemplateNotFound When the template cannot be found
 	 *
 	 * @return string
 	 */
-	public function render($template, array $data = []);
+	public function render($template, $data);
 }
 

@@ -4,14 +4,14 @@
  * @license http://www.opensource.org/licenses/mit-license.php MIT (see the LICENSE file)
  */
 
-namespace Interop\Output\Template;
+namespace Interop\Output;
 
 use Interop\Output\Exception\TemplateNotFound;
 
 /**
  * Describes the interface for Template factories
  */
-interface Factory
+interface TemplateFactory
 {
 	/**
 	 * Loads the given template
