@@ -14,18 +14,18 @@ interface Context
 	/**
 	 * Returns whether or not the template has data within this context
 	 *
-	 * @param Template $template
+	 * @param string $template
 	 *
 	 * @return boolean True if there is data for the template, false otherwise
 	 */
-	public function accepts(Template $template);
+	public function accepts($template);
 
 	/**
 	 * Provide data for a template
 	 *
-	 * @param Template $template
+	 * @param string $template
 	 *
 	 * @return array
 	 */
-	public function provide(Template $template);
+	public function provide($template);
 }
