@@ -12,20 +12,12 @@ namespace Interop\Output;
 interface Context
 {
 	/**
-	 * Returns whether or not the template has data within this context
-	 *
-	 * @param string $template
-	 *
-	 * @return boolean True if there is data for the template, false otherwise
+	 * Returns whether the template has data within this context
 	 */
-	public function accepts($template);
+	public function accepts(string $name): bool;
 
 	/**
 	 * Provide data for a template
-	 *
-	 * @param string $template
-	 *
-	 * @return array
 	 */
-	public function provide($template);
+	public function provide(string $name): array;
 }

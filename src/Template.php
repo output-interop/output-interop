@@ -12,18 +12,12 @@ namespace Interop\Output;
 interface Template
 {
 	/**
-	 * Returns the file that this Template will render
-	 *
-	 * @return string
+	 * Returns the name of this Template
 	 */
-	public function file();
+	public function name(): string;
 
 	/**
 	 * Renders the context data into the template
-	 *
-	 * @param Context $context
-	 *
-	 * @return string
 	 */
-	public function render(Context $context);
+	public function render(Context $context): string;
 }
